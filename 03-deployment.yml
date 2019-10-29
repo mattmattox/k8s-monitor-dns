@@ -43,6 +43,4 @@ spec:
             - name: ExternalIP
               value: "198.41.0.4"
             - name: Timeout
-              value: "10"
-
-
+              value: "10s"
