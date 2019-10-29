@@ -10,7 +10,7 @@ OPTIONS:
    -i      Internal DNS IP address Default: 10.43.0.10
    -E      External DNS record Default: a.root-servers.net
    -e      External DNS IP address Default: 198.41.0.4
-   -T      DNS Timeout in seconds Default: 10
+   -T      DNS Timeout in seconds Default: 10s
 EOF
 }
 
@@ -66,7 +66,7 @@ fi
 
 if [[ -z $Timeout ]]
 then
-        Timeout=10
+        Timeout=10s
 fi
 
 
