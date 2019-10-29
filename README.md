@@ -25,4 +25,6 @@ ExternalHost = a.root-servers.net (This record is used to check if external DNS 
 
 ExternalIP = 198.41.0.4 (This IP is used to verify the correct IP is being returned)
 
-Timeout = 10 (This is the timeout value for DNS lookups)
+Timeout = 10s (This is the timeout value for DNS lookups)
+
+Delay = 5s (This is the delay between checks)
