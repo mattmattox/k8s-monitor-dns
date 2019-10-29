@@ -32,7 +32,7 @@ spec:
       serviceAccountName: k8s-monitor-dns
       containers:
         - name: k8s-monitor-dns
-          image: cube8021/k8s-monitor-dns
+          image: cube8021/k8s-monitor-dns:v0.2
           env:
             - name: InternalHost
               value: "kube-dns.kube-system.svc.cluster.local"
