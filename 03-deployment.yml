@@ -1,0 +1,48 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: k8s-monitor-dns
+  namespace: "kube-system"
+  labels:
+    app: k8s-monitor-dns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-monitor-dns
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: k8s-monitor-dns
+      annotations:
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - k8s-monitor-dns
+            topologyKey: "kubernetes.io/hostname"
+      serviceAccountName: k8s-monitor-dns
+      containers:
+        - name: k8s-monitor-dns
+          image: cube8021/k8s-monitor-dns:v0.0
+          env:
+            - name: InternalHost
+              value: "kube-dns.kube-system.svc.cluster.local"
+            - name: InternalIP
+              value: "10.43.0.10"
+            - name: ExternalHost
+              value: "a.root-servers.net"
+            - name: ExternalIP
+              value: "198.41.0.4"
+            - name: Timeout
+              value: "10"
+
+
