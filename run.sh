@@ -76,7 +76,7 @@ do
 for ip in $(kubectl describe endpoints kube-dns --namespace=kube-system | grep ' Addresses:' | awk '{print $2}' | sed 's/,/\n/g')
 do
 	echo "Checking $ip"
-	InternalOutput=`timeout "$timeout" dig -short @"$ip" "$InternalHost"`
+	InternalOutput=`timeout "$Timeout" dig -short @"$ip" "$InternalHost"`
 	if $InternalOutput
 	then
 		##Internal DNS returned successfully and now we need to check the IP
@@ -89,7 +89,7 @@ do
 	else
 		echo "Internal DNS has timed out"
 	fi
-        ExternalOutput=`timeout "$timeout" dig -short @"$ip" "$ExternalHost"`
+        ExternalOutput=`timeout "$Timeout" dig -short @"$ip" "$ExternalHost"`
         if $ExternalOutput
         then
                 ##External DNS returned successfully and now we need to check the IP
