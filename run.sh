@@ -11,11 +11,12 @@ OPTIONS:
    -E      External DNS record Default: a.root-servers.net
    -e      External DNS IP address Default: 198.41.0.4
    -T      DNS Timeout in seconds Default: 10s
+   -D      Delay between checks Default 5s
 EOF
 }
 
 VERBOSE=
-while getopts .ht:I:i:E:e:T:v. OPTION
+while getopts .ht:I:i:E:e:T:D:v. OPTION
 do
      case $OPTION in
          h)
@@ -36,6 +37,9 @@ do
              ;;
          T)
              Timeout=$OPTARG
+             ;;
+         D)
+             Delay=$OPTARG
              ;;
          ?)
              usage
@@ -69,6 +73,10 @@ then
         Timeout=10s
 fi
 
+if [[ -z $Delay ]]
+then
+        Delay=5s
+fi
 
 while true
 do
@@ -105,5 +113,7 @@ do
                 echo "External DNS has timed out"
         fi
 done
+
+sleep "$Delay"
 
 done
