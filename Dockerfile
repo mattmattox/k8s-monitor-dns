@@ -1,21 +1,40 @@
-FROM ubuntu:18.04
+# Use a specific version of golang alpine for the builder stage
+FROM golang:1.21.4-alpine AS builder
 
-MAINTAINER matthew.mattox@rancher.com
+# Install git (required for fetching the dependencies)
+RUN apk update && apk add --no-cache git
 
-ENV DEBIAN_FRONTEND=noninteractive
+# Set the working directory inside the container
+WORKDIR /src
 
-RUN apt-get update && apt-get install -yq --no-install-recommends \
-    apt-utils \
-    curl \
+# Copy the go.mod and go.sum files first to leverage Docker cache
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the rest of the source code
+COPY . .
+
+# Build the Go app
+RUN GOOS=linux GOARCH=amd64 go build -o /go/bin/k8s-monitor-dns
+
+# Use Ubuntu as the base for the final stage
+FROM ubuntu:latest
+
+# Install necessary packages
+RUN apt-get update && \
+    apt-get install -y \
     dnsutils \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-## Install kubectl
-ADD kubectl /usr/local/bin/kubectl
-RUN chmod +x /usr/local/bin/kubectl
+# Set the working directory
+WORKDIR /go/bin
 
-## Setup run script
-WORKDIR /root
-ADD run.sh /root/run.sh
+# Copy the built binary from the builder stage
+COPY --from=builder /go/bin/k8s-monitor-dns /go/bin/k8s-monitor-dns
 
-CMD /root/run.sh
+# Ensure the binary is executable
+RUN chmod +x /go/bin/k8s-monitor-dns
+
+# Define the entry point for the container
+ENTRYPOINT ["/go/bin/k8s-monitor-dns"]

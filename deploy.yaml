@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: k8s-monitor-dns
+  labels:
+    app: k8s-monitor-dns
+spec:
+  selector:
+    matchLabels:
+      app: k8s-monitor-dns
+  template:
+    metadata:
+      labels:
+        app: k8s-monitor-dns
+    spec:
+      containers:
+      - name: k8s-monitor-dns
+        image: cube8021/k8s-monitor-dns:latest
+        env:
+        - name: INTERNAL_HOST
+          value: "kube-dns.kube-system.svc.cluster.local"
+        - name: INTERNAL_IP
+          value: "10.43.0.10"
+        - name: EXTERNAL_HOST
+          value: "a.root-servers.net"
+        - name: EXTERNAL_IP
+          value: "198.41.0.4"
+        - name: TIMEOUT
+          value: "10s"
+        - name: DELAY
+          value: "5s"
