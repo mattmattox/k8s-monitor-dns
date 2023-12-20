@@ -4,6 +4,9 @@ metadata:
   name: k8s-monitor-dns
   labels:
     app: k8s-monitor-dns
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
 spec:
   selector:
     matchLabels:
